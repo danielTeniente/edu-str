@@ -1,0 +1,28 @@
+{
+    "app": {
+        "title": "Educational ML Tools",
+        "welcome": "Welcome to Educational ML Tools! 🎓",
+        "description": "This application provides interactive visualizations for understanding machine learning concepts. Use the sidebar menu to navigate through different sections and explore various ML tools.",
+        "available_sections": "Current available sections:",
+        "navigation": "Navigation",
+        "language": "Language"
+    },
+    "perceptron": {
+        "title": "Perceptron Visualization",
+        "description": "Modify the weights and bias values to see how the decision boundary changes.",
+        "weight1": "Weight w1",
+        "weight2": "Weight w2",
+        "bias": "Bias (b)",
+        "class1": "Class 1 (y=1)",
+        "class_neg1": "Class -1 (y=-1)",
+        "decision_boundary": "Decision Boundary",
+        "graph_title": "Perceptron Classification and Decision Boundary",
+        "equations_title": "Mathematical Equations",
+        "perceptron_eq_title": "Perceptron Decision Rule:",
+        "perceptron_eq_desc": "The perceptron classifies a point (x₁, x₂) based on this equation:",
+        "boundary_eq_title": "Decision Boundary Equation:",
+        "boundary_eq_desc": "The decision boundary is where the perceptron output equals zero. Solving for x₂:",
+        "explanation_title": "Understanding the Parameters:",
+        "explanation_text": "• w₁, w₂: Weights that determine the slope of the decision boundary\n• b: Bias term, determines where the line intersects the x₂-axis (vertical shift)\n• The decision boundary is the line that separates the two classes\n• Points above the line are classified as one class, points below as the other\n• When w₂ = 0, the boundary becomes a vertical line at x₁ = -b/w₁"
+    }
+} 

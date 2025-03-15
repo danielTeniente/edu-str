@@ -1,0 +1,28 @@
+{
+    "app": {
+        "title": "Herramientas Educativas de ML",
+        "welcome": "¡Bienvenido a las Herramientas Educativas de ML! 🎓",
+        "description": "Esta aplicación proporciona visualizaciones interactivas para comprender conceptos de machine learning. Utiliza el menú lateral para navegar por las diferentes secciones y explorar varias herramientas de ML.",
+        "available_sections": "Secciones disponibles:",
+        "navigation": "Navegación",
+        "language": "Idioma"
+    },
+    "perceptron": {
+        "title": "Visualización del Perceptrón",
+        "description": "Modifica los valores de los pesos y el bias para ver cómo cambia la frontera de decisión.",
+        "weight1": "Peso w1",
+        "weight2": "Peso w2",
+        "bias": "Bias (b)",
+        "class1": "Clase 1 (y=1)",
+        "class_neg1": "Clase -1 (y=-1)",
+        "decision_boundary": "Frontera de decisión",
+        "graph_title": "Clasificación del Perceptrón y Frontera de Decisión",
+        "equations_title": "Ecuaciones Matemáticas",
+        "perceptron_eq_title": "Regla de Decisión del Perceptrón:",
+        "perceptron_eq_desc": "El perceptrón clasifica un punto (x₁, x₂) basándose en esta ecuación:",
+        "boundary_eq_title": "Ecuación de la Frontera de Decisión:",
+        "boundary_eq_desc": "La frontera de decisión es donde la salida del perceptrón es igual a cero. Despejando x₂:",
+        "explanation_title": "Entendiendo los Parámetros:",
+        "explanation_text": "• w₁, w₂: Pesos que determinan la pendiente de la frontera de decisión\n• b: Término de bias, determina dónde la línea intersecta el eje x₂ (desplazamiento vertical)\n• La frontera de decisión es la línea que separa las dos clases\n• Los puntos sobre la línea se clasifican como una clase, los puntos debajo como la otra\n• Cuando w₂ = 0, la frontera se convierte en una línea vertical en x₁ = -b/w₁"
+    }
+} 
