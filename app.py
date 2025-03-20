@@ -29,9 +29,18 @@ def main():
         "Books": show_books
     }
     
+    list_of_pages = list(pages.keys())
+    # get current language
+    current_lang = st.session_state.language
+    
+    # verify if it is spanish
+    if current_lang != 'es':
+        # drop Books if it is not spanish
+        list_of_pages.remove("Books")
+
     page = st.sidebar.radio(
         label="",
-        options=list(pages.keys()),
+        options=list_of_pages,
         label_visibility="collapsed"
     )
     

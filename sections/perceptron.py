@@ -1,8 +1,8 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from utils.i18n import get_text
-import time
 
 # Cache for generated data to avoid recomputing
 @st.cache_data
@@ -75,11 +75,11 @@ def show_limitations():
     st.write(get_text("limitations_text", "perceptron"))
 
 def show_exercise():
-    st.header(get_text("exercise_title", "perceptron"))
+    st.subheader(get_text("exercise1_title", "perceptron"))
     st.write(get_text("exercise_desc", "perceptron"))
     
     # Get cached data
-    x1, y1, x2, y2 = generate_exercise_data()
+    x1, y1, x2, y2 = generate_exercise_data(n_points=100, noise_scale=0.15)
     
     # Combine points for classification
     X = np.vstack([np.column_stack([x1, y1]), np.column_stack([x2, y2])])
@@ -98,6 +98,9 @@ def show_exercise():
         if abs(w2) < 0.001:  # Check if w2 is effectively zero
             st.warning(get_text("division_by_zero", "perceptron"))
         else:
+            # Show equation with weights
+            st.latex(f"x_2 = -\\frac{{{w1:.2f}}}{{{w2:.2f}}}x_1 - \\frac{{{b:.2f}}}{{{w2:.2f}}}")
+            # Show calculated result
             st.latex(f"x_2 = {-w1/w2:.2f}x_1 + {-b/w2:.2f}")
     
     with col2:
@@ -141,43 +144,31 @@ def show_exercise():
         # Show the plot in the container
         plot_container.pyplot(fig)
         
-        # Show success/failure message
-        if is_correct:
-            st.success(get_text("exercise_success", "perceptron"))
-        else:
-            st.info(get_text("exercise_continue", "perceptron"))
+        # Calculate classification statistics
+        correct_class1 = np.sum((outputs == 1) & (y == 1))
+        correct_class_neg1 = np.sum((outputs == -1) & (y == -1))
+        misclassified = np.sum(outputs != y)
+        
+        # Create three columns for statistics
+        stat_col1, stat_col2, stat_col3 = st.columns(3)
+        
+        with stat_col1:
+            st.metric(get_text("correct_class1", "perceptron"), correct_class1)
+        with stat_col2:
+            st.metric(get_text("correct_class_neg1", "perceptron"), correct_class_neg1)
+        with stat_col3:
+            st.metric(get_text("misclassified", "perceptron"), misclassified)
+        
+    st.info(get_text("exercise_continue", "perceptron"))
 
-def show_perceptron():
-    st.title(get_text("title", "perceptron"))
-    st.write(get_text("description", "perceptron"))
-
-    # Add mathematical equations section
-    st.header(get_text("equations_title", "perceptron"))
-    
-    # Perceptron equation
-    st.subheader(get_text("perceptron_eq_title", "perceptron"))
-    st.write(get_text("perceptron_eq_desc", "perceptron"))
-    st.latex(r"y = \text{sign}(w_1x_1 + w_2x_2 + b)")
-    
-    # Standard line equation
-    st.subheader(get_text("line_eq_title", "perceptron"))
-    st.write(get_text("line_eq_desc", "perceptron"))
-    st.latex(r"y = mx + b")
-    st.write(get_text("line_eq_params", "perceptron"))
-    
-    # Comparison between standard line and perceptron boundary
-    st.subheader(get_text("comparison_title", "perceptron"))
-    st.write(get_text("comparison_text", "perceptron"))
-    
-    # Decision boundary equation
-    st.subheader(get_text("boundary_eq_title", "perceptron"))
-    st.write(get_text("boundary_eq_desc", "perceptron"))
-    st.latex(r"x_2 = -\frac{w_1}{w_2}x_1 - \frac{b}{w_2}")
-    
-    # Parameters explanation
-    st.subheader(get_text("explanation_title", "perceptron"))
-    st.write(get_text("explanation_text", "perceptron"))
-
+def show_exercise2():
+    st.subheader(get_text("exercise2_title", "perceptron"))
+    st.write(get_text("exercise2_desc", "perceptron"))
+    st.write(get_text("exercise2_or", "perceptron"))
+    st.write(get_text("exercise2_and", "perceptron"))
+    st.write(get_text("exercise2_nand", "perceptron"))
+    st.write(get_text("exercise2_xor", "perceptron"))
+    st.write(get_text("exercise2_nor_warning", "perceptron"))
     # Create two columns for the interactive part
     col1, col2 = st.columns([1, 2])
 
@@ -235,13 +226,129 @@ def show_perceptron():
 
         # Show the plot in the container
         plot_container.pyplot(fig)
+        # Show the truth table for reference
+        st.write("### Truth Table")
+        truth_table = pd.DataFrame({
+            'x₁': [-1, -1, 1, 1],
+            'x₂': [-1, 1, -1, 1],
+            'Output': outputs
+        })
+        st.dataframe(truth_table)
+        
+    # Determine which logical function is being modeled
+    # Create a dictionary mapping the output pattern to the function name
+    output_pattern = tuple(outputs)
+    function_patterns = {
+        (-1, 1, 1, 1): "OR",
+        (1, 1, 1, -1): "NAND",
+        (-1, -1, -1, 1): "AND",
+        (1, -1, -1, -1): "NOR",
+        (1, -1, -1, 1): "XOR"
+    }
     
-    # Add the line equation section
-    st.markdown("---")  # Add a separator
+    # Check if the current pattern matches any known function
+    detected_function = function_patterns.get(output_pattern, "Unknown")
     
-    # Add the exercise section
-    st.markdown("---")  # Add a separator
+    # Display the result
+    st.write(get_text("exercise2_result", "perceptron"))
+    st.write(f"**{detected_function}** function")
+    
+    
+def show_perceptron():
+    st.title(get_text("title", "perceptron"))
+    st.write(get_text("description", "perceptron"))
+    st.info(get_text("info_linear_regression", "perceptron"))
+
+    # Add mathematical equations section
+    st.header(get_text("equations_title", "perceptron"))    
+    st.write(get_text("perceptron_eq_desc_p1", "perceptron"))
+    st.latex(r"y = \text{f}(w_1x_1 + w_2x_2 + b)")
+    st.write(get_text("perceptron_eq_desc_p2", "perceptron"))
+    st.latex(r"w_1x_1 + w_2x_2 + b = 0")
+    st.write(get_text("perceptron_eq_desc_p3", "perceptron"))
+    st.latex(r"w_2x_2 = -w_1x_1 - b")
+    st.latex(r"x_2 = -\frac{w_1}{w_2}x_1 - \frac{b}{w_2}")
+    st.write(get_text("perceptron_eq_desc_p4", "perceptron"))
+    st.latex(r"y = mx + b")
+    st.write(get_text("perceptron_eq_desc_p5", "perceptron"))
+
+    # add interactive example of cloud of dots
+    st.write(get_text("perceptron_ex", "perceptron"))    
+    # Generate two clouds of points
+    x1, y1, x2, y2 = generate_exercise_data(n_points=80, noise_scale=0.5)
+    
+    # Combine points for classification
+    X = np.vstack([np.column_stack([x1, y1]), np.column_stack([x2, y2])])
+    y = np.array([1] * len(x1) + [-1] * len(x2))
+    
+    # Create two columns for controls and visualization
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        # Sliders for weights and bias
+        w1 = st.slider("Weight 1 (w₁)", -2.0, 2.0, 0.8, 0.1)
+        w2 = st.slider("Weight 2 (w₂)", -2.0, 2.0, 0.6, 0.1)
+        b = st.slider("Bias (b)", -2.0, 2.0, -0.2, 0.1)
+        
+        # Show current line equation
+        if abs(w2) < 0.001:
+            st.warning("Warning: Weight 2 is too close to zero")
+        else:
+            # Show equation with weights
+            st.latex(f"x_2 = -\\frac{{{w1:.2f}}}{{{w2:.2f}}}x_1 - \\frac{{{b:.2f}}}{{{w2:.2f}}}")
+    
+    with col2:
+        # Create the figure
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        # Calculate current classification
+        w = np.array([w1, w2])
+        outputs = np.sign(np.dot(X, w) + b)
+        
+        # Plot points with colors based on current classification
+        mask_1 = outputs == 1
+        mask_neg_1 = outputs == -1
+        ax.scatter(X[mask_1, 0], X[mask_1, 1], c='blue', label='Class 1', alpha=0.6)
+        ax.scatter(X[mask_neg_1, 0], X[mask_neg_1, 1], c='red', label='Class -1', alpha=0.6)
+        
+        # Plot decision boundary
+        x1_vals = np.linspace(-1.5, 1.5, 100)
+        x2_vals = (-w1 * x1_vals - b) / w2
+        ax.plot(x1_vals, x2_vals, 'k--', label='Decision Boundary', linewidth=2)
+        
+        # Configure the plot
+        ax.axhline(0, color='black', linewidth=0.5)
+        ax.axvline(0, color='black', linewidth=0.5)
+        ax.set_xlim(-1.5, 1.5)
+        ax.set_ylim(-1.5, 1.5)
+        ax.set_xlabel("x₁")
+        ax.set_ylabel("x₂")
+        ax.grid(True)
+        ax.legend()
+        ax.set_title("Interactive Classification")
+        
+        # Show the plot
+        st.pyplot(fig)
+        # Show current line equation
+        if abs(w2) < 0.001:
+            st.warning("Warning: Division by zero")
+        else:
+            # Show calculated result
+            st.latex(f"x_2 = {-w1/w2:.2f}x_1 + {-b/w2:.2f}")
+    
+    # Comparison between standard line and perceptron boundary
+    st.subheader(get_text("activation_title", "perceptron"))
+    st.write(get_text("activation_text", "perceptron"))
+    st.latex(r"f(z) = \begin{cases} 1 & \text{if } z \geq 0 \\ -1 & \text{if } z < 0 \end{cases}")
+    st.write(get_text("activation_text_p2", "perceptron"))
+    st.latex(r"y = \text{f}(w_1x_1 + w_2x_2 + b)")
+    st.latex(r"y = \text{f}(z)")
+    st.latex(r"z = w_1x_1 + w_2x_2 + b")
+    st.write(get_text("activation_text_p3", "perceptron"))
+
     show_exercise()
+
+    show_exercise2()
     
     # Add the limitations section
     st.markdown("---")  # Add a separator

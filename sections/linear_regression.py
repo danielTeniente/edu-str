@@ -173,6 +173,46 @@ def show_linear_regression():
     st.header(get_text("explanation_title", "linear_regression"))
     st.write(get_text("explanation_text", "linear_regression"))
 
-    # Exercise section
-    st.header(get_text("exercise_title", "linear_regression"))
-    st.write(get_text("exercise_desc", "linear_regression"))
+    # Limitations section
+    st.header(get_text("limitations_title", "linear_regression"))
+    st.write(get_text("limitations_text", "linear_regression"))
+
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5))
+    
+    # Example 1: Quadratic pattern
+    x1 = np.linspace(-5, 5, 100)
+    y1 = x1**2 + np.random.normal(0, 0.5, 100)
+    ax1.scatter(x1, y1, alpha=0.5, label='Data points')
+    ax1.plot(x1, x1**2, 'r-', label='True pattern')
+    ax1.set_title('Quadratic Pattern')
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.grid(True)
+    ax1.legend()
+    
+    # Example 2: Exponential pattern
+    x2 = np.linspace(0, 2, 100)
+    y2 = np.exp(x2) + np.random.normal(0, 0.5, 100)
+    ax2.scatter(x2, y2, alpha=0.5, label='Data points')
+    ax2.plot(x2, np.exp(x2), 'r-', label='True pattern')
+    ax2.set_title('Exponential Pattern')
+    ax2.set_xlabel('x')
+    ax2.set_ylabel('y')
+    ax2.grid(True)
+    ax2.legend()
+    
+    # Example 3: Periodic pattern
+    x3 = np.linspace(0, 4*np.pi, 100)
+    y3 = np.sin(x3) + np.random.normal(0, 0.2, 100)
+    ax3.scatter(x3, y3, alpha=0.5, label='Data points')
+    ax3.plot(x3, np.sin(x3), 'r-', label='True pattern')
+    ax3.set_title('Periodic Pattern')
+    ax3.set_xlabel('x')
+    ax3.set_ylabel('y')
+    ax3.grid(True)
+    ax3.legend()
+    
+    # Adjust layout and display
+    plt.tight_layout()
+    st.pyplot(fig)
+    
