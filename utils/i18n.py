@@ -2,33 +2,43 @@ import json
 import os
 import streamlit as st
 
+# Initialize session state for language if not exists
+if 'language' not in st.session_state:
+    st.session_state.language = 'es'
+
 LANGUAGES = {
-    "en": "English",
     "es": "Español",
+    "en": "English",
     "pt": "Português"
 }
 
 def load_translations(lang_code):
     """Load translations for the specified language code."""
     try:
-        with open(f"languages/{lang_code}.json", "r", encoding="utf-8") as f:
+        file_path = os.path.join('languages', f'{lang_code}.json')
+        with open(file_path, 'r', encoding='utf-8') as f:
             return json.load(f)
-    except Exception as e:
-        st.error(f"Error loading translations for {lang_code}: {str(e)}")
-        # Fallback to English
-        with open("languages/en.json", "r", encoding="utf-8") as f:
+    except FileNotFoundError:
+        # Fallback to English if translation file not found
+        file_path = os.path.join('languages', 'en.json')
+        with open(file_path, 'r', encoding='utf-8') as f:
             return json.load(f)
 
-def get_text(key, section="app"):
-    """Get translated text for a given key and section."""
-    if "translations" not in st.session_state:
-        st.session_state.translations = load_translations("en")
-        st.session_state.language = "en"
+def get_text(key, section=None):
+    """Get translated text for a key, optionally within a section."""
+    translations = load_translations(st.session_state.language)
     
     try:
-        return st.session_state.translations[section][key]
+        if section:
+            return translations[section][key]
+        return translations[key]
     except KeyError:
-        return f"Missing translation: {section}.{key}"
+        # Return the key itself if translation not found
+        return key
+
+def set_language(lang_code):
+    """Set the current language."""
+    st.session_state.language = lang_code
 
 def change_language():
     """Callback function to handle language changes."""
@@ -41,8 +51,8 @@ def change_language():
 def setup_language_selector():
     """Add language selector to sidebar and handle language changes."""
     if "language" not in st.session_state:
-        st.session_state.language = "en"
-        st.session_state.translations = load_translations("en")
+        st.session_state.language = "es"
+        st.session_state.translations = load_translations("es")
     
     st.sidebar.selectbox(
         "Language/Idioma/Língua",
